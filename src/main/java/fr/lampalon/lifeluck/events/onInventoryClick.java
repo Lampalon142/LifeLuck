@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.Objects;
 
 public class onInventoryClick implements Listener {
-    Player targetPlayer;
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
@@ -96,10 +95,6 @@ public class onInventoryClick implements Listener {
                 handleWarnItem(player);
                 event.setCancelled(true);
             }
-            if (displayName.equals(config.getString("submenu.ban.title"))){
-                handleBanItem(player, targetPlayer);
-                event.setCancelled(true);
-            }
         }
     }
 
@@ -108,27 +103,4 @@ public class onInventoryClick implements Listener {
 
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(config.getString("submenu.warn.action.message")));
     }
-
-    private void handleBanItem(Player player, Player targetPlayer) {
-        FileConfiguration config = LifeLuck.get().getConfig();
-
-        String banTime = config.getString("ban.time");
-        long durationTicks = parseDuration(banTime) * 20;
-
-        if (!targetPlayer.getPlayer().isBanned()) {
-            Bukkit.getBanList(BanList.Type.NAME).addBan(targetPlayer.getName(), "", new Date(System.currentTimeMillis() + durationTicks), null);
-        }
-    }
-
-    private long parseDuration(String durationString) {
-        long durationTicks = 0;
-        try {
-            Duration duration = Duration.parse("P" + durationString.toUpperCase());
-            durationTicks = duration.getSeconds();
-        } catch (DateTimeParseException e) {
-            e.printStackTrace();
-        }
-        return durationTicks;
-    }
-
 }
