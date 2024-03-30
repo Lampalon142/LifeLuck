@@ -1,0 +1,45 @@
+##############################
+#----------------------------#
+#----------Settings----------#
+#----------------------------#
+##############################
+
+# For eg : &7[&cMyBestServer&7]
+prefix: "&7[&cLifeLuck&7] &f»"
+
+ores-detected:
+  - DEEPSLATE_DIAMOND_ORE
+  - DEEPSLATE_EMERALD_ORE
+  - DEEPSLATE_IRON_ORE
+  - DEEPSLATE_GOLD_ORE
+  - DEEPSLATE_COAL_ORE
+  - DEEPSLATE_LAPIS_ORE
+  - DEEPSLATE_REDSTONE_ORE
+  - DIAMOND_ORE
+  - EMERALD_ORE
+  - IRON_ORE
+  - GOLD_ORE
+  - COAL_ORE
+  - LAPIS_ORE
+  - REDSTONE_ORE
+  - NETHER_QUARTZ_ORE
+  - ANCIENT_DEBRIS
+
+menu:
+  ## Title for /topluck
+  title: "&7[&cBestTopLuck&7]"
+  ## Slots for the list eg: 9 for 1 line etc
+  ## Default : 54
+  slots: 54
+
+submenu:
+  title: "&cMenu des sanctions"
+  ## Slots for the list eg: 9 for 1 line etc
+  ## Default : 27
+  slots: 27
+  warn:
+    title: "&bDiscreet warning"
+    description: "&bTo warn a player with a Xray or other! For come on your discord"
+    material: "NETHERITE_SWORD" ## Example : NETHERITE_SWORD
+    action:
+      message: "Test"

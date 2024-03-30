@@ -1,0 +1,8 @@
+name: LifeLuck
+version: '${project.version}'
+main: fr.lampalon.lifeluck.LifeLuck
+api-version: '1.18'
+authors: [Lampalon]
+website: https://lampalon.fr
+commands:
+  topluck:
