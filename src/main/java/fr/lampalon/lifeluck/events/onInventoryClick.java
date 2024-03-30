@@ -6,6 +6,7 @@ import fr.lampalon.lifeluck.gui.MainMenu;
 import fr.lampalon.lifeluck.utils.MessageUtil;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,6 +23,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.time.Duration;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.Objects;
 
 public class onInventoryClick implements Listener {
@@ -60,7 +64,13 @@ public class onInventoryClick implements Listener {
         discreetWarningMeta.setDisplayName(config.getString("submenu.warn.title"));
         discreetWarningButton.setItemMeta(discreetWarningMeta);
 
+        ItemStack banButton = new ItemStack(Material.valueOf(config.getString("submenu.ban.material")));
+        ItemMeta banMeta = banButton.getItemMeta();
+        banMeta.setDisplayName(config.getString("submenu.ban.title"));
+        banButton.setItemMeta(banMeta);
+
         secondMenu.setItem(0, discreetWarningButton);
+        secondMenu.setItem(1, banButton);
 
         player.openInventory(secondMenu);
     }
@@ -86,6 +96,10 @@ public class onInventoryClick implements Listener {
                 handleWarnItem(player);
                 event.setCancelled(true);
             }
+            if (displayName.equals(config.getString("submenu.ban.title"))){
+                handleBanItem(player, targetPlayer);
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -95,10 +109,26 @@ public class onInventoryClick implements Listener {
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(config.getString("submenu.warn.action.message")));
     }
 
-    private void handleBanItem(Player player, Player targetPlayer){
+    private void handleBanItem(Player player, Player targetPlayer) {
         FileConfiguration config = LifeLuck.get().getConfig();
 
-        if (!targetPlayer.getPlayer().isBanned()){
+        String banTime = config.getString("ban.time");
+        long durationTicks = parseDuration(banTime) * 20;
+
+        if (!targetPlayer.getPlayer().isBanned()) {
+            Bukkit.getBanList(BanList.Type.NAME).addBan(targetPlayer.getName(), "", new Date(System.currentTimeMillis() + durationTicks), null);
         }
     }
+
+    private long parseDuration(String durationString) {
+        long durationTicks = 0;
+        try {
+            Duration duration = Duration.parse("P" + durationString.toUpperCase());
+            durationTicks = duration.getSeconds();
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+        }
+        return durationTicks;
+    }
+
 }
