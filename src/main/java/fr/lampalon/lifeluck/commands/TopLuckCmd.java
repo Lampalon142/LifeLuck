@@ -1,11 +1,8 @@
 package fr.lampalon.lifeluck.commands;
 
 import fr.lampalon.lifeluck.LifeLuck;
-import fr.lampalon.lifeluck.data.config.Messages;
-import fr.lampalon.lifeluck.data.config.MessagesConfig;
 import fr.lampalon.lifeluck.gui.MainMenu;
 import fr.lampalon.lifeluck.utils.MessageUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -1,9 +1,13 @@
 package fr.lampalon.lifeluck.gui;
 
+import fr.lampalon.lifeluck.LifeLuck;
+import fr.lampalon.lifeluck.data.config.MainConfig;
+import fr.lampalon.lifeluck.utils.MessageUtil;
 import fr.lampalon.lifeluck.utils.OreTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -22,9 +26,10 @@ public class MainMenu {
     }
 
     public void openMenu(Player player, int page) {
+        FileConfiguration config = LifeLuck.get().getConfig();
         List<Player> playersOnPage = calculatePlayersForPage(page);
 
-        Inventory menu = Bukkit.createInventory(player, 54, ChatColor.GRAY + "Main Menu");
+        Inventory menu = Bukkit.createInventory(player, config.getInt("menu.slots"), ChatColor.translateAlternateColorCodes('&', config.getString("menu.title")));
         for (Player targetPlayer : playersOnPage) {
             double percentage = oreTracker.getPlayerPercentage(targetPlayer);
             ItemStack item = createItem(targetPlayer.getName(), percentage);

@@ -2,7 +2,6 @@ package fr.lampalon.lifeluck;
 
 import fr.lampalon.lifeluck.commands.TopLuckCmd;
 import fr.lampalon.lifeluck.data.config.MainConfig;
-import fr.lampalon.lifeluck.data.config.MessagesConfig;
 import fr.lampalon.lifeluck.data.config.Options;
 import fr.lampalon.lifeluck.events.BlockBreakListener;
 import fr.lampalon.lifeluck.events.onInventoryClick;
@@ -46,7 +45,7 @@ public final class LifeLuck extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getServer().getLogger().info("Good bye thanks to use LifeLuck");
+        getServer().getLogger().info("[LifeLuck] Good bye thanks to use LifeLuck");
         MessagesConfig.save();
         this.mc = null;
         this.options = null;
