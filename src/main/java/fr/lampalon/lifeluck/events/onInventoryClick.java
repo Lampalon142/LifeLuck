@@ -25,10 +25,12 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 
 public class onInventoryClick implements Listener {
+    FileConfiguration config = LifeLuck.get().getConfig();
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Inventory inventory = event.getClickedInventory();
@@ -36,7 +38,7 @@ public class onInventoryClick implements Listener {
 
         Player player = (Player) event.getWhoClicked();
         String title = event.getView().getTitle();
-        if (title == null || !title.equals(ChatColor.GRAY + "Main Menu")) return;
+        if (title == null || !title.equals(config.getString("menu.title"))) return;
 
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
@@ -52,15 +54,13 @@ public class onInventoryClick implements Listener {
             event.setCancelled(true);
         }
     }
-
-    Material material;
     private void openSecondMenu(Player player, Player targetPlayer) {
-        FileConfiguration config = LifeLuck.get().getConfig();
         Inventory secondMenu = Bukkit.createInventory(player, config.getInt("submenu.slots"), Objects.requireNonNull(config.getString("submenu.title")));
 
         ItemStack discreetWarningButton = new ItemStack(Material.valueOf(config.getString("submenu.warn.material")));
         ItemMeta discreetWarningMeta = discreetWarningButton.getItemMeta();
         discreetWarningMeta.setDisplayName(config.getString("submenu.warn.title"));
+        discreetWarningMeta.setLore(Collections.singletonList(config.getString("submenu.warn.description")));
         discreetWarningButton.setItemMeta(discreetWarningMeta);
 
         ItemStack banButton = new ItemStack(Material.valueOf(config.getString("submenu.ban.material")));
@@ -73,10 +73,8 @@ public class onInventoryClick implements Listener {
 
         player.openInventory(secondMenu);
     }
-
     @EventHandler
     public void onSecondMenuClick(InventoryClickEvent event) {
-        FileConfiguration config = LifeLuck.get().getConfig();
         Inventory clickedInventory = event.getClickedInventory();
         if (clickedInventory == null || !(event.getWhoClicked() instanceof Player)) return;
 
@@ -97,10 +95,7 @@ public class onInventoryClick implements Listener {
             }
         }
     }
-
     private void handleWarnItem(Player player) {
-        FileConfiguration config = LifeLuck.get().getConfig();
-
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(config.getString("submenu.warn.action.message")));
     }
 }

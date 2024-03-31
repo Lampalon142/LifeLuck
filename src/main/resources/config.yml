@@ -31,6 +31,9 @@ menu:
   ## Slots for the list eg: 9 for 1 line etc
   ## Default : 54
   slots: 54
+  players:
+    headers: "&e&l%player%"
+    percentage: "&7Percentage: %percentage%"
 
 submenu:
   title: "&cMenu des sanctions"

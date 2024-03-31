@@ -1,6 +1,6 @@
 package fr.lampalon.lifeluck.gui;
 
-import fr.lampalon.lifeluck.events.OreTracker;
+import fr.lampalon.lifeluck.utils.OreTracker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

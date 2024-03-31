@@ -6,7 +6,7 @@ import fr.lampalon.lifeluck.data.config.MessagesConfig;
 import fr.lampalon.lifeluck.data.config.Options;
 import fr.lampalon.lifeluck.events.BlockBreakListener;
 import fr.lampalon.lifeluck.events.onInventoryClick;
-import fr.lampalon.lifeluck.events.OreTracker;
+import fr.lampalon.lifeluck.utils.OreTracker;
 import fr.lampalon.lifeluck.gui.MainMenu;
 import fr.lampalon.lifeluck.utils.Update;
 import org.bstats.bukkit.Metrics;
