@@ -51,18 +51,20 @@ public class MainMenu {
     }
 
     private ItemStack createPrevPageItem(int currentPage) {
+        FileConfiguration config = LifeLuck.get().getConfig();
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.GREEN + "Page précédente");
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString("menu.previous-page.title")));
         meta.setCustomModelData(currentPage - 1);
         item.setItemMeta(meta);
         return item;
     }
 
     private ItemStack createNextPageItem(int currentPage) {
+        FileConfiguration config = LifeLuck.get().getConfig();
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.GREEN + "Page suivante");
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString("menu.next-page.title")));
         meta.setCustomModelData(currentPage + 1);
         item.setItemMeta(meta);
         return item;
@@ -78,13 +80,16 @@ public class MainMenu {
     }
 
     private ItemStack createItem(String playerName, double percentage) {
+        FileConfiguration config = LifeLuck.get().getConfig();
         ItemStack item = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) item.getItemMeta();
         meta.setOwner(playerName);
-        meta.setDisplayName(ChatColor.YELLOW + playerName);
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString("menu.headers.title").replace("%target%", playerName)));
 
         List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.GRAY + "Percentage: " + ChatColor.WHITE + percentage + "%");
+        String percentageString = Double.toString(percentage);
+
+        lore.add(ChatColor.translateAlternateColorCodes('&', config.getString("menu.headers.description").replace("%percentage%", percentageString)));
 
         meta.setLore(lore);
 

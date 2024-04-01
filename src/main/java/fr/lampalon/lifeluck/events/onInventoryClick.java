@@ -66,8 +66,8 @@ public class onInventoryClick implements Listener {
         banMeta.setLore(Collections.singletonList(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.ban.description"))));
         banButton.setItemMeta(banMeta);
 
-        ItemStack teleportButton = new ItemStack(Material.valueOf(config.getString("submenu.ban.material")));
-        ItemMeta teleportMeta = banButton.getItemMeta();
+        ItemStack teleportButton = new ItemStack(Material.valueOf(config.getString("submenu.teleport.material")));
+        ItemMeta teleportMeta = teleportButton.getItemMeta();
         teleportMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.teleport.title")));
         teleportMeta.setLore(Collections.singletonList(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.teleport.description"))));
         teleportButton.setItemMeta(teleportMeta);
@@ -123,17 +123,15 @@ public class onInventoryClick implements Listener {
             Player targetPlayer = this.targetPlayer;
             handleTeleport(player, targetPlayer);
             event.setCancelled(true);
-        } else {
-            System.out.println("Clicked item does not match any expected options.");
         }
     }
     private void handleTeleport(Player player, Player targetPlayer) {
         FileConfiguration config = LifeLuck.get().getConfig();
         if (targetPlayer != null && targetPlayer.isOnline()) {
             player.teleport(targetPlayer.getLocation());
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.teleport.action.message")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.teleport.action.message").replace("%target%", targetPlayer.getName())));
         } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.offlineplayer")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("prefix") + config.getString("lang.offlineplayer")));
         }
     }
     private void handleWarnItem(Player player, Player targetPlayer) {
@@ -144,14 +142,14 @@ public class onInventoryClick implements Listener {
     private static void handleBanItem(Player player, Player targetPlayer) {
         FileConfiguration config = LifeLuck.get().getConfig();
         if (targetPlayer == null || !targetPlayer.isOnline()) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.offlineplayer")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("prefix") + config.getString("lang.offlineplayer")));
             return;
         }
 
         String banTime = config.getString("submenu.ban.action.time");
 
         if (banTime == null || banTime.isEmpty()) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.ban.errortime")));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("prefix") + config.getString("lang.ban.errortime")));
             return;
         }
 
@@ -167,7 +165,7 @@ public class onInventoryClick implements Listener {
                     Date.from(Instant.now().plus(duration)),
                     null);
             targetPlayer.kickPlayer(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.ban.action.message")));
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.ban.chat")));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.ban.chat").replace("%target%", targetPlayer.getName())));
         }
     }
     private static Duration parseDuration(String durationString) {

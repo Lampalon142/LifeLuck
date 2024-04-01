@@ -31,6 +31,13 @@ menu:
   ## Slots for the list eg: 9 for 1 line etc
   ## Default : 54
   slots: 54
+  previous-page:
+    title: "&cPrevious Page"
+  next-page:
+    title: "&aNext Page"
+  headers:
+    title: "&ePlayer: %target%"
+    description: "&7Percentage: &c%percentage%%"
 
 submenu:
   title: "&cSanctions menu"
@@ -41,21 +48,21 @@ submenu:
     title: "&aTeleport to player"
     description: "&cTo teleport you to a player."
     material: "ENDER_PEARL"
-    slots: 10
+    slots: 11
     action:
       message: "&cYou have been teleported to %target%"
   warn:
     title: "&bDiscreet warning"
     description: "&bTo warn a player with a Xray or other! For come on your discord"
     material: "PAPER" ## Example : NETHERITE_SWORD
-    slots: 12
+    slots: 13
     action:
       message: "&e&lYou have been found, come on discord https://example.com/discord"
   ban:
     title: "&cBan Person"
     description: "&cPermit to you to ban a person"
     material: "NETHERITE_SWORD"
-    slots: 14
+    slots: 15
     action:
       ## For the time you can use : 30d for 1 month, 1y for 1 year
       ## Default : 30d
@@ -74,6 +81,6 @@ lang:
   noperm: "&cYou don't have the permission for this command."
 
   ban:
-    chat: "&c%player% has been banned from the server for X-Ray"
+    chat: "&c%target% has been banned from the server for X-Ray"
     errortime: "&cBan time configuration not found."
     time-invalid: "&cInvalid ban duration."
