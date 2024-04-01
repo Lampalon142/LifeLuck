@@ -18,11 +18,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 
 public class onInventoryClick implements Listener {
-    private Messages messages;
     private Player targetPlayer;
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -55,15 +57,24 @@ public class onInventoryClick implements Listener {
         ItemStack discreetWarningButton = new ItemStack(Material.valueOf(config.getString("submenu.warn.material")));
         ItemMeta discreetWarningMeta = discreetWarningButton.getItemMeta();
         discreetWarningMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.warn.title")));
+        discreetWarningMeta.setLore(Collections.singletonList(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.warn.description"))));
         discreetWarningButton.setItemMeta(discreetWarningMeta);
 
         ItemStack banButton = new ItemStack(Material.valueOf(config.getString("submenu.ban.material")));
         ItemMeta banMeta = banButton.getItemMeta();
         banMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.ban.title")));
+        banMeta.setLore(Collections.singletonList(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.ban.description"))));
         banButton.setItemMeta(banMeta);
 
-        secondMenu.setItem(0, discreetWarningButton);
-        secondMenu.setItem(1, banButton);
+        ItemStack teleportButton = new ItemStack(Material.valueOf(config.getString("submenu.ban.material")));
+        ItemMeta teleportMeta = banButton.getItemMeta();
+        teleportMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.teleport.title")));
+        teleportMeta.setLore(Collections.singletonList(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.teleport.description"))));
+        teleportButton.setItemMeta(teleportMeta);
+
+        secondMenu.setItem(config.getInt("submenu.warn.slots"), discreetWarningButton);
+        secondMenu.setItem(config.getInt("submenu.ban.slots"), banButton);
+        secondMenu.setItem(config.getInt("submenu.teleport.slots"), teleportButton);
 
         player.openInventory(secondMenu);
     }
@@ -98,82 +109,125 @@ public class onInventoryClick implements Listener {
 
         String warnTitle = ChatColor.translateAlternateColorCodes('&', config.getString("submenu.warn.title"));
         String banTitle = ChatColor.translateAlternateColorCodes('&', config.getString("submenu.ban.title"));
+        String teleportTitle = ChatColor.translateAlternateColorCodes('&', config.getString("submenu.teleport.title"));
 
         if (displayName.equalsIgnoreCase(warnTitle)) {
-            handleWarnItem(player);
+            Player targetPlayer = this.targetPlayer;
+            handleWarnItem(player, targetPlayer);
             event.setCancelled(true);
         } else if (displayName.equalsIgnoreCase(banTitle)) {
             Player targetPlayer = this.targetPlayer;
             handleBanItem(player, targetPlayer);
             event.setCancelled(true);
+        } else if (displayName.equals(teleportTitle)) {
+            Player targetPlayer = this.targetPlayer;
+            handleTeleport(player, targetPlayer);
+            event.setCancelled(true);
         } else {
             System.out.println("Clicked item does not match any expected options.");
         }
     }
-
-
-    private void handleWarnItem(Player player) {
+    private void handleTeleport(Player player, Player targetPlayer) {
+        FileConfiguration config = LifeLuck.get().getConfig();
+        if (targetPlayer != null && targetPlayer.isOnline()) {
+            player.teleport(targetPlayer.getLocation());
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.teleport.action.message")));
+        } else {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.offlineplayer")));
+        }
+    }
+    private void handleWarnItem(Player player, Player targetPlayer) {
         FileConfiguration config = LifeLuck.get().getConfig();
 
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.warn.action.message"))));
+        targetPlayer.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.warn.action.message"))));
     }
-    private void handleBanItem(Player player, Player targetPlayer) {
+    private static void handleBanItem(Player player, Player targetPlayer) {
+        FileConfiguration config = LifeLuck.get().getConfig();
         if (targetPlayer == null || !targetPlayer.isOnline()) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.offline));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.offlineplayer")));
             return;
         }
 
-        FileConfiguration config = LifeLuck.get().getConfig();
         String banTime = config.getString("submenu.ban.action.time");
 
-        if (banTime == null) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', messages.bantimeno));
+        if (banTime == null || banTime.isEmpty()) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.ban.errortime")));
             return;
         }
 
-        long durationTicks = parseDuration(banTime) * 20;
-
-        if (durationTicks <= 0) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', ChatColor.RED + "Invalid ban duration."));
+        Duration duration = parseDuration(banTime);
+        if (duration.isZero() || duration.isNegative()) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.ban.time-invalid")));
             return;
         }
 
         if (!targetPlayer.getPlayer().isBanned()) {
-            Bukkit.getBanList(BanList.Type.NAME).addBan(targetPlayer.getName(), ChatColor.translateAlternateColorCodes('&', config.getString("submenu.ban.action.message")), new Date(System.currentTimeMillis() + durationTicks), null);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.ban.action.chat")));
+            Bukkit.getBanList(BanList.Type.NAME).addBan(targetPlayer.getName(),
+                    ChatColor.translateAlternateColorCodes('&', config.getString("submenu.ban.action.message")),
+                    Date.from(Instant.now().plus(duration)),
+                    null);
             targetPlayer.kickPlayer(ChatColor.translateAlternateColorCodes('&', config.getString("submenu.ban.action.message")));
-        } else {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', messages.playerbanned));
+            Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("lang.ban.chat")));
         }
     }
-
-    private long parseDuration(String durationString) {
-        if (durationString == null) {
-            return 0;
+    private static Duration parseDuration(String durationString) {
+        if (durationString == null || durationString.isEmpty()) {
+            return Duration.ZERO;
         }
 
-        long durationTicks = 0;
         try {
-            char timeUnit = durationString.charAt(durationString.length() - 1);
-            int durationAmount = Integer.parseInt(durationString.substring(0, durationString.length() - 1));
+            String[] parts = durationString.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
+            Duration duration = Duration.ZERO;
+            for (int i = 0; i < parts.length; i += 2) {
+                int amount = Integer.parseInt(parts[i]);
+                String unit = parts[i + 1];
 
-            switch (timeUnit) {
-                case 's':
-                    durationTicks = durationAmount * 20;
-                    break;
-                case 'm':
-                    durationTicks = durationAmount * 60 * 20;
-                    break;
-                case 'h':
-                    durationTicks = durationAmount * 60 * 60 * 20;
-                    break;
-                case 'd':
-                    durationTicks = durationAmount * 24 * 60 * 60 * 20;
-                    break;
+                switch (unit.toLowerCase()) {
+                    case "second":
+                    case "seconds":
+                    case "sec":
+                    case "secs":
+                    case "s":
+                        duration = duration.plusSeconds(amount);
+                        break;
+                    case "minute":
+                    case "minutes":
+                    case "min":
+                    case "mins":
+                    case "m":
+                        duration = duration.plusMinutes(amount);
+                        break;
+                    case "hour":
+                    case "hours":
+                    case "hr":
+                    case "hrs":
+                    case "h":
+                        duration = duration.plusHours(amount);
+                        break;
+                    case "day":
+                    case "days":
+                    case "d":
+                        duration = duration.plusDays(amount);
+                        break;
+                    case "month":
+                    case "months":
+                    case "mon":
+                    case "mons":
+                        duration = duration.plusDays(amount * 30);
+                        break;
+                    case "year":
+                    case "years":
+                    case "y":
+                        duration = duration.plusDays(amount * 365);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid time unit: " + unit);
+                }
             }
-        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            return duration;
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
+            return Duration.ZERO;
         }
-        return durationTicks;
     }
 }

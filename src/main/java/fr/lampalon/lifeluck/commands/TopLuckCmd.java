@@ -6,6 +6,7 @@ import fr.lampalon.lifeluck.utils.MessageUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
@@ -13,8 +14,7 @@ import java.util.Objects;
 public class TopLuckCmd implements CommandExecutor {
     private final LifeLuck plugin;
     private final MainMenu menuManager;
-    private Messages s;
-
+    private FileConfiguration config = LifeLuck.get().getConfig();
     public TopLuckCmd(LifeLuck plugin, MainMenu menuManager) {
         this.plugin = plugin;
         this.menuManager = menuManager;
@@ -24,13 +24,14 @@ public class TopLuckCmd implements CommandExecutor {
         if (label.equalsIgnoreCase("topluck")){
 
             if (!(sender instanceof Player)){
-                sender.sendMessage(Objects.requireNonNull(MessageUtil.parseColors(s.onlyplayer)));
+                sender.sendMessage(Objects.requireNonNull(MessageUtil.parseColors(config.getString("lang.onlyplayer"))));
             }
 
             Player player = (Player) sender;
 
             if (!player.hasPermission("lifeluck.topluck")){
-                player.sendMessage(MessageUtil.parseColors(s.noperm));
+                player.sendMessage(MessageUtil.parseColors(config.getString("lang.noperm")));
+                return false;
             }
 
             menuManager.openMenu(player, 1);

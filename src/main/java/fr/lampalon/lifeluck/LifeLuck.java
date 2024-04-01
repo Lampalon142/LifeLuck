@@ -37,8 +37,6 @@ public final class LifeLuck extends JavaPlugin {
     private void startup(){
         registerCommands();
         registerEvents();
-        // Custom File
-        MessagesConfig.setup();
         this.mc = new MainConfig();
         this.options = new Options();
     }
@@ -46,7 +44,6 @@ public final class LifeLuck extends JavaPlugin {
     @Override
     public void onDisable() {
         getServer().getLogger().info("[LifeLuck] Good bye thanks to use LifeLuck");
-        MessagesConfig.save();
         this.mc = null;
         this.options = null;
     }

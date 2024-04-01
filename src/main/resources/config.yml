@@ -27,29 +27,53 @@ ores-detected:
 
 menu:
   ## Title for /topluck
-  title: "&7[&cBestTopLuck&7]"
+  title: "&7[&cLifeLuck&7]"
   ## Slots for the list eg: 9 for 1 line etc
   ## Default : 54
   slots: 54
 
 submenu:
-  title: "&cMenu des sanctions"
+  title: "&cSanctions menu"
   ## Slots for the list eg: 9 for 1 line etc
   ## Default : 27
   slots: 27
+  teleport:
+    title: "&aTeleport to player"
+    description: "&cTo teleport you to a player."
+    material: "ENDER_PEARL"
+    slots: 10
+    action:
+      message: "&cYou have been teleported to %target%"
   warn:
     title: "&bDiscreet warning"
     description: "&bTo warn a player with a Xray or other! For come on your discord"
-    material: "NETHERITE_SWORD" ## Example : NETHERITE_SWORD
+    material: "PAPER" ## Example : NETHERITE_SWORD
     slots: 12
     action:
-      message: "Test"
+      message: "&e&lYou have been found, come on discord https://example.com/discord"
   ban:
     title: "&cBan Person"
     description: "&cPermit to you to ban a person"
-    material: "DIRT"
+    material: "NETHERITE_SWORD"
     slots: 14
     action:
-      message: "§cIt is a example"
-      ## For the time you can use : 0 or null for permanent ban, 30d for 1 month, 1y for 1 year
-      time: "30d" ## Default : 30d
+      ## For the time you can use : 30d for 1 month, 1y for 1 year
+      ## Default : 30d
+      time: "30d"
+      message: "§cYou have been banned for X-Ray"
+
+
+##############################
+#----------------------------#
+#----------Language----------#
+#----------------------------#
+##############################
+lang:
+  onlyplayer: "&cOnly player can executed this command."
+  offlineplayer: "&cPlayer was not found or not exist."
+  noperm: "&cYou don't have the permission for this command."
+
+  ban:
+    chat: "&c%player% has been banned from the server for X-Ray"
+    errortime: "&cBan time configuration not found."
+    time-invalid: "&cInvalid ban duration."
