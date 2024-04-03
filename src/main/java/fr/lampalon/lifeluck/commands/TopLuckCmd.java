@@ -24,13 +24,13 @@ public class TopLuckCmd implements CommandExecutor {
         if (label.equalsIgnoreCase("topluck")){
 
             if (!(sender instanceof Player)){
-                sender.sendMessage(Objects.requireNonNull(MessageUtil.parseColors(config.getString("lang.onlyplayer"))));
+                sender.sendMessage(Objects.requireNonNull(MessageUtil.parseColors(config.getString("prefix") + config.getString("lang.onlyplayer"))));
             }
 
             Player player = (Player) sender;
 
             if (!player.hasPermission("lifeluck.topluck")){
-                player.sendMessage(MessageUtil.parseColors(config.getString("lang.noperm")));
+                player.sendMessage(MessageUtil.parseColors(config.getString("prefix") + config.getString("lang.noperm")));
                 return false;
             }
 

@@ -7,7 +7,7 @@ import fr.lampalon.lifeluck.events.BlockBreakListener;
 import fr.lampalon.lifeluck.events.onInventoryClick;
 import fr.lampalon.lifeluck.utils.OreTracker;
 import fr.lampalon.lifeluck.gui.MainMenu;
-//import fr.lampalon.lifeluck.utils.Update;
+import fr.lampalon.lifeluck.utils.Update;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
@@ -31,7 +31,7 @@ public final class LifeLuck extends JavaPlugin {
         saveDefaultConfig();
         startup();
         utils();
-        //Update();
+        Update();
     }
 
     private void startup(){
@@ -67,7 +67,7 @@ public final class LifeLuck extends JavaPlugin {
     }
 
     private void utils(){
-        int pluginId = 19817;
+        int pluginId = 21395;
         Metrics metrics = new Metrics(this, pluginId);
         metrics.addCustomChart(new SingleLineChart("players", new Callable<Integer>() {
             @Override
@@ -76,15 +76,15 @@ public final class LifeLuck extends JavaPlugin {
             }
         }));
     }
-    //private void Update(){
-    //new Update(this, 21395).getLatestVersion(version -> {
-    //if(this.getDescription().getVersion().equalsIgnoreCase(version)){
-    //this.getLogger().info("Plugin use the latest update thanks.");
-    //} else {
-    //this.getLogger().warning("Plugin required an update ! (https://www.spigotmc.org/resources/1-8-1-20-lifemod-moderation-plugin.112381/)");
-    //}
-    //});
-    //}
+    private void Update(){
+        new Update(this, 115935).getLatestVersion(version -> {
+            if(this.getDescription().getVersion().equalsIgnoreCase(version)){
+                this.getLogger().info("Plugin use the latest update thanks.");
+            } else {
+                this.getLogger().warning("Plugin required an update ! (https://www.spigotmc.org/resources/1-16-1-20-lifeluck.115935/)");
+            }
+        });
+    }
     public static LifeLuck get(){
         return instance;
     }

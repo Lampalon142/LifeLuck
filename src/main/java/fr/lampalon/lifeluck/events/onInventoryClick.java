@@ -49,6 +49,10 @@ public class onInventoryClick implements Listener {
             openSecondMenu(player, targetPlayer);
             event.setCancelled(true);
         }
+
+        if (clickedItem.getType() == Material.ARROW){
+            event.setCancelled(true);
+        }
     }
     private void openSecondMenu(Player player, Player targetPlayer) {
         FileConfiguration config = LifeLuck.get().getConfig();

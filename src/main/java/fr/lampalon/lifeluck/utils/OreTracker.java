@@ -1,4 +1,4 @@
-package fr.lampalon.lifeluck.utils;
+package fr.lampalon.lifemod.utils;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

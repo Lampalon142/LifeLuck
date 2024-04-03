@@ -6,3 +6,4 @@ authors: [Lampalon]
 website: https://lampalon.fr
 commands:
   topluck:
+    description: Topluck command
